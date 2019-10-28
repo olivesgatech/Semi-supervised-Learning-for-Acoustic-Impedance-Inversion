@@ -181,13 +181,13 @@ def test(args):
         test_loss = []
         for x,y in test_loader:
             y_pred = inverse_net(x)
-            property_loss = criterion(y_pred,y)/np.prod(y.shape)
+            property_loss = criterion(y_pred,y)/np.float(np.prod(y.shape))
             corr, r2 = metrics(y_pred.detach(),y.detach())
             test_property_corr.append(corr)
             test_property_r2.append(r2)
 
             x_rec = forward_net(y_pred)
-            seismic_loss = criterion(x_rec, x)/np.prod(x.shape)
+            seismic_loss = criterion(x_rec, x)/np.float(np.prod(x.shape))
             loss = args.alpha*property_loss + args.beta*seismic_loss
             test_loss.append(loss.item())
 
@@ -237,7 +237,7 @@ def test(args):
 if __name__ == '__main__':
     ## Arguments and parameters
     parser = argparse.ArgumentParser()
-    parser.add_argument('-num_train_wells', type=int, default=20, help="Number of AI traces from the model to be used for training")
+    parser.add_argument('-num_train_wells', type=int, default=10, help="Number of AI traces from the model to be used for training")
     parser.add_argument('-max_epoch', type=int, default=1000, help="maximum number of training epochs")
     parser.add_argument('-batch_size', type=int, default=50,help="Batch size for training")
     parser.add_argument('-alpha', type=float, default=1, help="weight of property loss term")
